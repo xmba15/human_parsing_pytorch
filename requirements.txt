@@ -1,0 +1,4 @@
+torch
+torchvision
+tensorboard
+albumentations==0.4.3

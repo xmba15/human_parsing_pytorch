@@ -16,10 +16,12 @@ class BaseDatasetConfig:
 
     @staticmethod
     def generate_color_chart(num_classes, seed=1812):
-        assert(num_classes > 0)
+        assert num_classes > 0
         np.random.seed(seed)
 
-        colors = np.random.randint(0, 255, size=(num_classes - 1, 3), dtype="uint8")
+        colors = np.random.randint(
+            0, 255, size=(num_classes - 1, 3), dtype="uint8"
+        )
         colors = np.vstack([[0, 0, 0], colors]).astype("uint8")
 
         return colors
@@ -103,7 +105,9 @@ class BaseDataset(data.Dataset):
         for idx in range(self.__len__()):
             _, gt = self.__getitem__(idx)
             for class_name in self._classes:
-                class_dist_dict[class_name] += np.count_nonzero(gt == class_idx_dict[class_name])
+                class_dist_dict[class_name] += np.count_nonzero(
+                    gt == class_idx_dict[class_name]
+                )
 
         return class_dist_dict
 
@@ -114,7 +118,9 @@ class BaseDataset(data.Dataset):
 
         weighted = np.zeros(self.num_classes, dtype=np.float64)
         for key, value in class_dist_dict.items():
-            weighted[class_idx_dict[key]] = 1 / np.log(value * 1.0 / total_pixels + 1.02)
+            weighted[class_idx_dict[key]] = 1 / np.log(
+                value * 1.0 / total_pixels + 1.02
+            )
 
         return weighted
 
@@ -123,8 +129,18 @@ class BaseDataset(data.Dataset):
         legend = np.zeros(((len(classes) * 25) + 25, 300, 3), dtype="uint8")
         for (i, (class_name, color)) in enumerate(zip(classes, colors)):
             color = [int(c) for c in color]
-            cv2.putText(legend, class_name, (5, (i * 25) + 17), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-            cv2.rectangle(legend, (100, (i * 25)), (300, (i * 25) + 25), tuple(color), -1)
+            cv2.putText(
+                legend,
+                class_name,
+                (5, (i * 25) + 17),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 0, 255),
+                2,
+            )
+            cv2.rectangle(
+                legend, (100, (i * 25)), (300, (i * 25) + 25), tuple(color), -1
+            )
 
         return legend
 
@@ -153,4 +169,6 @@ class BaseDataset(data.Dataset):
         import re
 
         pattern = r"([0-9]+)"
-        return [int(c) if c.isdigit() else c.lower() for c in re.split(pattern, s)]
+        return [
+            int(c) if c.isdigit() else c.lower() for c in re.split(pattern, s)
+        ]

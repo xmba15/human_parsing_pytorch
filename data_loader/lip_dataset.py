@@ -61,6 +61,8 @@ _lip_dataset_config = LipDatasetConfig()
 
 
 class LipDataset(BaseDataset):
+    __name__ = "lip_dataset"
+
     def __init__(self, data_path, phase="test", transform=None):
         super(LipDataset, self).__init__(
             data_path,
@@ -71,13 +73,17 @@ class LipDataset(BaseDataset):
         )
 
         _lip_data_path = os.path.join(self._data_path, "LIP")
-        _image_data_paths = os.path.join(_lip_data_path, "{}_images".format(phase))
+        _image_data_paths = os.path.join(
+            _lip_data_path, "{}_images".format(phase)
+        )
 
         self._image_paths = glob.glob(os.path.join(_image_data_paths, "*.jpg"))
         self._image_paths.sort(key=BaseDataset.human_sort)
 
         if self._phase != "test":
-            _gt_data_paths = os.path.join(_lip_data_path, "{}_segmentations".format(phase))
+            _gt_data_paths = os.path.join(
+                _lip_data_path, "{}_segmentations".format(phase)
+            )
             self._gt_paths = glob.glob(os.path.join(_gt_data_paths, "*.png"))
             self._gt_paths.sort(key=BaseDataset.human_sort)
 
